@@ -29,7 +29,7 @@ func (s *tenc) SendVerificationCode(ctx context.Context, to string) (string, err
 		))
 		return "", err
 	}
-	g.Log().Notice(ctx, "SendVerificationCode:", to, code)
+	g.Log().Notice(ctx, "SendVerificationCode:", to, code, resp)
 	return code, err
 }
 
@@ -43,7 +43,7 @@ func (s *tenc) SendBindingPhoneCode(ctx context.Context, to string) (string, err
 		))
 		return "", err
 	}
-	g.Log().Notice(ctx, "SendBindingPhoneCode:", to, code)
+	g.Log().Notice(ctx, "SendBindingPhoneCode:", to, code, resp)
 	return code, err
 }
 func (s *tenc) SendBindingCompletionPhone(ctx context.Context, to string) error {
@@ -71,7 +71,7 @@ func (s *tenc) SendUpPhoneCode(ctx context.Context, to string) (string, error) {
 		))
 		return "", err
 	}
-	g.Log().Notice(ctx, "SendUpPhoneCode:", to, code)
+	g.Log().Notice(ctx, "SendUpPhoneCode:", to, code, resp)
 	return code, err
 }
 

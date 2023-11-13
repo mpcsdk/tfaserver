@@ -35,7 +35,7 @@ func (s *huawei) SendVerificationCode(ctx context.Context, to string) (string, e
 		))
 		return "", err
 	}
-	g.Log().Notice(ctx, "SendVerificationCode:", to, code)
+	g.Log().Notice(ctx, "SendVerificationCode:", to, code, resp)
 	return code, err
 }
 
@@ -49,7 +49,7 @@ func (s *huawei) SendBindingPhoneCode(ctx context.Context, to string) (string, e
 		))
 		return "", err
 	}
-	g.Log().Notice(ctx, "SendBindingPhoneCode:", to, code)
+	g.Log().Notice(ctx, "SendBindingPhoneCode:", to, code, resp)
 	return code, err
 }
 func (s *huawei) SendBindingCompletionPhone(ctx context.Context, to string) error {
@@ -76,7 +76,7 @@ func (s *huawei) SendUpPhoneCode(ctx context.Context, to string) (string, error)
 		))
 		return "", err
 	}
-	g.Log().Notice(ctx, "SendUpPhoneCode:", to, code)
+	g.Log().Notice(ctx, "SendUpPhoneCode:", to, code, resp)
 	return code, err
 }
 
