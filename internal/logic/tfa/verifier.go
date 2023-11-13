@@ -124,8 +124,7 @@ func (s *verifierPhone) SendVerificationCode() (string, error) {
 	case model.RiskKind_Tx:
 		return service.SmsCode().SendVerificationCode(s.ctx, s.phone)
 	case model.RiskKind_BindPhone:
-		return service.SmsCode().SendVerificationCode(s.ctx, s.phone)
-		// return service.SmsCode().SendBindingPhoneCode(s.ctx, s.phone)
+		return service.SmsCode().SendBindingPhoneCode(s.ctx, s.phone)
 	case model.RiskKind_BindMail:
 		return service.SmsCode().SendVerificationCode(s.ctx, s.phone)
 	case model.RiskKind_UpPhone:

@@ -30,7 +30,7 @@ database:
   - link: "pgsql:postgres:123456@tcp(127.0.0.1:10100)/tfa"
 
 nrpc:
-  natsUrl: "127.0.0.1:4222"
+  natsUrl: "127.0.0.1:4222,127.0.0.1:4211"
 
 userTokenUrl: "https://auth-dev.mixmarvel-sdk.com/info"
 
