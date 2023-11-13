@@ -5,8 +5,8 @@ import (
 	"tfaserver/internal/config"
 	"tfaserver/internal/service"
 
-	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcfg"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/mpcsdk/mpcCommon/exmail"
