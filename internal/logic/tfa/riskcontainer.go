@@ -70,7 +70,7 @@ func (s *riskPenddingContainer) NewRiskPendding(
 			UserId:     userId,
 			RiskSerial: riskSerial,
 			verifier:   map[VerifyKind]IVerifier{},
-			dealline:   gtime.Now().Add(time.Duration(s.verificationCodeDuration)),
+			dealline:   gtime.Now().Add(time.Duration(s.verificationCodeDuration) * time.Second),
 			// dealline: gtime.Now(),
 		}
 		key := keyUserRiskId(userId, riskSerial)

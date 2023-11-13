@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 	"tfaserver/internal/model"
+	"time"
 )
 
 var userId = "userId"
@@ -39,6 +40,27 @@ func Test_riskPhone(t *testing.T) {
 	if err != nil {
 		t.Error(k)
 		t.Error(err)
+	}
+}
+func Test_newRiskPenddingContainer(t *testing.T) {
+
+	rc := newRiskPenddingContainer(10)
+	key := keyUserRiskId("userId", "riskSerial")
+	rc.NewRiskPendding("userId", "riskSerial", model.RiskKind_BindMail)
+	if _, ok := rc.riskPendding[key]; !ok {
+		t.Error("riskPendding not exists")
+	}
+	time.Sleep(10 * time.Second)
+	if _, ok := rc.riskPendding[key]; ok {
+		t.Error("riskPendding exists")
+	}
+	///
+	time.Sleep(5 * time.Second)
+	key = keyUserRiskId("userId2", "riskSerial2")
+	rc.NewRiskPendding("userId2", "riskSerial2", model.RiskKind_BindMail)
+	time.Sleep(10 * time.Second)
+	if _, ok := rc.riskPendding[key]; !ok {
+		t.Error("riskPendding not exists")
 	}
 }
 
