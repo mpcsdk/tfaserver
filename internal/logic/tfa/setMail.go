@@ -42,7 +42,7 @@ func (s *sTFA) TfaUpMail(ctx context.Context, tfaInfo *entity.Tfa, mail string, 
 	if tfaInfo == nil || tfaInfo.Mail == "" {
 		return "", mpccode.CodeParamInvalid.Error()
 	}
-	verifier := newVerifierMail(model.RiskKind_BindMail, mail)
+	verifier := newVerifierMail(model.RiskKind_UpMail, mail)
 	risk := s.riskPenddingContainer.NewRiskPendding(tfaInfo.UserId, riskSerial, model.RiskKind_UpMail)
 
 	risk.AddVerifier(verifier)
