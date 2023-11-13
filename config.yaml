@@ -1,0 +1,112 @@
+server:
+  address:     ":8002"
+  workId: 1
+  name: "tfaserver"
+
+jaegerUrl: "127.0.0.1:6831"
+
+logger:
+  level : "all"
+  stdout: true 
+  rotateExpire: "1d"
+  path: "./"
+
+
+cache:
+  apiInterval: 1
+  sessionDuration: 10000
+  verificationCodeDuration : 600
+  limitSendInterval: 1
+
+redis:
+  default:
+    address: "127.0.0.1:6379"
+    db: 1
+
+database:
+  default:
+  - link: "pgsql:postgres:123456@tcp(127.0.0.1:10100)/tfa"
+  tfa:
+  - link: "pgsql:postgres:123456@tcp(127.0.0.1:10100)/tfa"
+
+nrpc:
+  natsUrl: "127.0.0.1:4222"
+
+userTokenUrl: "https://auth-dev.mixmarvel-sdk.com/info"
+
+
+sms:
+  domestic:
+    huawei:
+      APIAddress: "https://smsapi.cn-south-1.myhuaweicloud.com:443/sms/batchSendSms/v1"
+      ApplicationKey: "DZcZWoIauKdHY1wD0179m4Jk5N9V"
+      ApplicationSecret: "1GSPX8WyCwJbTfwEohqsBlOzbcam"
+      Sender: "8823091933902"
+      TemplateID: "000ab97205d34659a78b47c9e1a805fb"
+      Signature: "幂玛"
+      VerificationTemplateId: "000ab97205d34659a78b47c9e1a805fb"
+      BindingVerificationTemplateId: "854e71aba9af47d385c38df6ee5c03df"
+      BindingCompletionTemplateId: "e178e68e269c4d1ca71b2c4eaac8a4fc"
+      UpVerificationTemplateId: "6bdc7e3e736741378ccfefdaa31332ab"
+      UpCompletionTemplateId: "31ffe08985a147f8a7d2ae4d32cdf4b1"
+  foreign:
+    tenc:
+      SecretId: "AKID51zveEaotSAnIez267vjsxrnfR1eCZwG"
+      SecretKey: "KXlv05GIC0lN2ccq1IYggZJv1CPOLKDt"
+      Endpoint: "sms.tencentcloudapi.com"
+      SignMethod: "HMAC-SHA256"
+      Region: "ap-guangzhou"
+      SmsSdkAppId: "1400856433"
+      SignName: ""
+      VerificationTemplateId: "1933346"
+      BindingVerificationTemplateId: "1941645"
+      BindingCompletionTemplateId: "1941647"
+      UpVerificationTemplateId: "1941649"
+      UpCompletionTemplateId: "1941654"
+
+exemail:
+  From: "mixmarvel-sdk@mixmarvel-sdk.com"
+  SecretId: "AKID51zveEaotSAnIez267vjsxrnfR1eCZwG"
+  SecretKey: "KXlv05GIC0lN2ccq1IYggZJv1CPOLKDt"
+  Subject: "MixMarver"
+  VerificationTemplateId: 26732
+  BindingVerificationTemplateId: 26728
+  BindingCompletionTemplateId: 26729
+  UpVerificationTemplateId: 26730
+  UpCompletionTemplateId: 26731
+
+gfcli:
+  gen:
+    dao:
+    - link:     "pgsql:postgres:123456@tcp(127.0.0.1:10100)/riskcontrol"
+      tables:   "contract_abi,rule"
+      jsonCase: "CamelLower"
+      typeMapping:
+        decimal:
+          type:   decimal.Decimal
+          import: github.com/shopspring/decimal
+        numeric:
+          type:   decimal.Decimal
+          import: github.com/shopspring/decimal
+    - link:     "pgsql:postgres:123456@tcp(127.0.0.1:10100)/scrape_logs"
+      group: scrape_logs
+      tables:   "agg_ft_24h,agg_nft_24h"
+      jsonCase: "CamelLower"
+      typeMapping:
+        decimal:
+          type:   decimal.Decimal
+          import: github.com/shopspring/decimal
+        numeric:
+          type:   decimal.Decimal
+          import: github.com/shopspring/decimal
+    - link:     "pgsql:postgres:123456@tcp(127.0.0.1:10100)/tfa"
+      group: tfa
+      tables:   "tfa"
+      jsonCase: "CamelLower"
+      typeMapping:
+        decimal:
+          type:   decimal.Decimal
+          import: github.com/shopspring/decimal
+        numeric:
+          type:   decimal.Decimal
+          import: github.com/shopspring/decimal
