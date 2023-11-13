@@ -19,6 +19,7 @@ type SmsHuawei struct {
 	ApplicationKey    string `json:"applicationKey" v:"required"`
 	ApplicationSecret string `json:"applicationSecret" v:"required"`
 	Sender            string `json:"sender" v:"required"`
+	SenderCompletion  string `json:"senderCompletion" v:"required"`
 	Signature         string `json:"signature" v:"required"`
 
 	VerificationTemplateId        string `json:"verificationTemplateId" v:"required"`

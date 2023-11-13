@@ -42,6 +42,7 @@ sms:
       ApplicationKey: "DZcZWoIauKdHY1wD0179m4Jk5N9V"
       ApplicationSecret: "1GSPX8WyCwJbTfwEohqsBlOzbcam"
       Sender: "8823091933902"
+      SenderCompletion: "8823100805832"
       TemplateID: "000ab97205d34659a78b47c9e1a805fb"
       Signature: "幂玛"
       VerificationTemplateId: "000ab97205d34659a78b47c9e1a805fb"

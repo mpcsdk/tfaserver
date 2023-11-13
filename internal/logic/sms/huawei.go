@@ -81,7 +81,7 @@ func (s *huawei) SendUpPhoneCode(ctx context.Context, to string) (string, error)
 }
 
 func (s *huawei) SendUpCompletionPhone(ctx context.Context, to string) error {
-	_, resp, err := s.huawei.SendSms(to, s.cfg.Huawei.UpVerificationTemplateId, "")
+	_, resp, err := s.huawei.SendSms(to, s.cfg.Huawei.UpCompletionTemplateId, "")
 	if err != nil {
 		err = gerror.Wrap(err, mpccode.ErrDetails(
 			mpccode.ErrDetail("SendUpCompletionPhone", to),
@@ -99,6 +99,7 @@ func newdomestic() *huawei {
 			ApplicationKey:    config.Config.Sms.Domestic.Huawei.ApplicationKey,
 			ApplicationSecret: config.Config.Sms.Domestic.Huawei.ApplicationSecret,
 			Sender:            config.Config.Sms.Domestic.Huawei.Sender,
+			SenderCompletion:  config.Config.Sms.Domestic.Huawei.SenderCompletion,
 			TemplateID:        config.Config.Sms.Domestic.Huawei.VerificationTemplateId,
 			Signature:         config.Config.Sms.Domestic.Huawei.Signature,
 		},
