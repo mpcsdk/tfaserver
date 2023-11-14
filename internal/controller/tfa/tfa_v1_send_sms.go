@@ -33,7 +33,7 @@ func (c *ControllerV1) SendSmsCode(ctx context.Context, req *v1.SendSmsCodeReq) 
 		g.Log().Errorf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeTokenInvalid)
 	}
-	tfaInfo, err := service.TFA().TfaInfo(ctx, info.UserId)
+	tfaInfo, err := service.DB().FetchTfaInfo(ctx, info.UserId)
 	if err != nil || tfaInfo == nil {
 		g.Log().Warning(ctx, "SendSmsCode:", req, err)
 		return nil, gerror.NewCode(mpccode.CodeTFANotExist)

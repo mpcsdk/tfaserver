@@ -37,6 +37,9 @@ func (c *ControllerV1) TFAInfo(ctx context.Context, req *v1.TFAInfoReq) (res *v1
 		g.Log().Errorf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeTFANotExist)
 	}
+	if info.Mail == "" && info.Phone == "" {
+		return nil, gerror.NewCode(mpccode.CodeTFANotExist)
+	}
 	///
 
 	res = &v1.TFAInfoRes{

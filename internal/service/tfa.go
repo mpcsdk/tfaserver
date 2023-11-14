@@ -13,7 +13,6 @@ import (
 
 type (
 	ITFA interface {
-		TfaInfo(ctx context.Context, userId string) (*entity.Tfa, error)
 		// /
 		SendPhoneCode(ctx context.Context, userId string, riskSerial string) (string, error)
 		SendMailCode(ctx context.Context, userId string, riskSerial string) (string, error)
@@ -27,7 +26,7 @@ type (
 		TfaUpPhone(ctx context.Context, tfaInfo *entity.Tfa, phone string, riskSerial string) (string, error)
 		TfaRiskKind(ctx context.Context, tfaInfo *entity.Tfa, riskSerial string) (model.RiskKind, error)
 		TfaRiskTidy(ctx context.Context, tfaInfo *entity.Tfa, riskSerial string, riskKind model.RiskKind) ([]string, error)
-		TFATx(ctx context.Context, userId string, riskSerial string) ([]string, error)
+		TFATx(ctx context.Context, tfaInfo *entity.Tfa, riskSerial string) ([]string, error)
 		VerifyCode(ctx context.Context, userId string, riskSerial string, code *model.VerifyCode) error
 	}
 )

@@ -8,7 +8,6 @@ import (
 	"tfaserver/internal/service"
 
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/mpcsdk/mpcCommon/mpccode"
 )
@@ -111,30 +110,24 @@ func (s *sTFA) TfaRiskTidy(ctx context.Context, tfaInfo *entity.Tfa, riskSerial 
 	return vlist, nil
 }
 
-func (s *sTFA) TFATx(ctx context.Context, userId string, riskSerial string) ([]string, error) {
-	info, err := s.TfaInfo(ctx, userId)
-	if err != nil {
-		g.Log().Warning(ctx, "TFATx:", "userid:", userId, "riskSerial:", riskSerial)
-		g.Log().Errorf(ctx, "%+v", err)
-		return nil, gerror.NewCode(mpccode.CodeInternalError)
-	}
-	if info == nil {
-		g.Log().Warning(ctx, "TFATx:", "userid:", userId, "riskSerial:", riskSerial)
-		g.Log().Errorf(ctx, "%+v", err)
+func (s *sTFA) TFATx(ctx context.Context, tfaInfo *entity.Tfa, riskSerial string) ([]string, error) {
+
+	if tfaInfo.Mail == "" && tfaInfo.Phone == "" {
+
 		return nil, gerror.NewCode(mpccode.CodeTFANotExist)
 	}
 
 	//
 	kind := []string{}
-	risk := s.riskPenddingContainer.NewRiskPendding(userId, riskSerial, model.RiskKind_Tx)
-	if info.Phone != "" {
-		verifier := newVerifierPhone(model.RiskKind_Tx, info.Phone)
+	risk := s.riskPenddingContainer.NewRiskPendding(tfaInfo.UserId, riskSerial, model.RiskKind_Tx)
+	if tfaInfo.Phone != "" {
+		verifier := newVerifierPhone(model.RiskKind_Tx, tfaInfo.Phone)
 		risk.AddVerifier(verifier)
 		kind = append(kind, "phone")
 	}
 
-	if info.Mail != "" {
-		verifer := newVerifierMail(model.RiskKind_Tx, info.Mail)
+	if tfaInfo.Mail != "" {
+		verifer := newVerifierMail(model.RiskKind_Tx, tfaInfo.Mail)
 		risk.AddVerifier(verifer)
 		kind = append(kind, "mail")
 	}

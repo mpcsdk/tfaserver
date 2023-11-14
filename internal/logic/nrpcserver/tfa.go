@@ -14,7 +14,13 @@ import (
 
 func (s *sNrpcServer) RpcTfaTx(ctx context.Context, req *tfav1.TfaTxReq) (*tfav1.TfaTxRes, error) {
 
-	kinds, err := service.TFA().TFATx(ctx, req.UserId, req.RiskSerial)
+	tfaInfo, err := service.DB().FetchTfaInfo(ctx, req.UserId)
+	if err != nil || tfaInfo == nil {
+		g.Log().Warning(ctx, "TFATx:", "req:", req)
+		g.Log().Errorf(ctx, "%+v", err)
+		return nil, gerror.NewCode(mpccode.CodeInternalError)
+	}
+	kinds, err := service.TFA().TFATx(ctx, tfaInfo, req.RiskSerial)
 	if err != nil {
 		g.Log().Errorf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodePerformRiskError)

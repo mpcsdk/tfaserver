@@ -32,7 +32,7 @@ func (c *ControllerV1) SendMailCode(ctx context.Context, req *v1.SendMailCodeReq
 		g.Log().Errorf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeTokenInvalid)
 	}
-	tfaInfo, err := service.TFA().TfaInfo(ctx, info.UserId)
+	tfaInfo, err := service.DB().FetchTfaInfo(ctx, info.UserId)
 	if err != nil || tfaInfo == nil {
 		g.Log().Warning(ctx, "SendMailCode:", req, err)
 		return nil, gerror.NewCode(mpccode.CodeTFANotExist)
