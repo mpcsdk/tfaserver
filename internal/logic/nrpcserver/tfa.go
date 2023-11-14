@@ -47,10 +47,13 @@ func (*sNrpcServer) RpcTfaInfo(ctx context.Context, req *tfav1.TFAReq) (res *tfa
 		return nil, gerror.NewCode(mpccode.CodeTFANotExist)
 	}
 	tfaInfo, err := service.DB().FetchTfaInfo(ctx, req.UserId)
-	if err != nil || tfaInfo == nil {
+	if err != nil {
 		g.Log().Warning(ctx, "TFAInfo no info:", "req:", req, "tfaInfo:", tfaInfo)
 		g.Log().Errorf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeTFANotExist)
+	}
+	if tfaInfo == nil {
+		return nil, nil
 	}
 	return &tfav1.TFARes{
 		UserId: tfaInfo.UserId,
