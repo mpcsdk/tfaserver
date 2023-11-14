@@ -17,13 +17,13 @@ import (
 
 func (c *ControllerV1) TfaRequest(ctx context.Context, req *v1.TfaRequestReq) (res *v1.TfaRequestRes, err error) {
 	// limit
-	if err := c.counter(ctx, req.Token, "SendMailCode"); err != nil {
+	if err := c.counter(ctx, req.Token, "TfaRequest"); err != nil {
 		g.Log().Errorf(ctx, "%+v", err)
 		return nil, err
 	}
 	/////
 	//trace
-	ctx, span := gtrace.NewSpan(ctx, "SendMailCode")
+	ctx, span := gtrace.NewSpan(ctx, "TfaRequest")
 	defer span.End()
 	/////
 	//
@@ -33,10 +33,11 @@ func (c *ControllerV1) TfaRequest(ctx context.Context, req *v1.TfaRequestReq) (r
 		return nil, gerror.NewCode(mpccode.CodeTokenInvalid)
 	}
 	///
-	tfaInfo, err := service.TFA().TFAInfo(ctx, info.UserId)
+	// tfaInfo, err := service.TFA().TFAInfo(ctx, info.UserId)
+	tfaInfo, err := service.DB().FetchTfaInfo(ctx, info.UserId)
 	if err != nil {
-		g.Log().Warning(ctx, "UpMail:", req, err)
-		return nil, gerror.NewCode(mpccode.CodeTFANotExist)
+		g.Log().Warning(ctx, "TfaRequest:", req, err)
+		return nil, gerror.NewCode(mpccode.CodeTokenInvalid)
 	}
 	///
 	///
@@ -95,13 +96,13 @@ func (c *ControllerV1) TfaRequest(ctx context.Context, req *v1.TfaRequestReq) (r
 		return nil, gerror.NewCode(mpccode.CodeParamInvalid)
 	}
 	///
-	tfaInfo, err = service.TFA().TFAInfo(ctx, info.UserId)
+	// tfaInfo, err = service.TFA().TFAInfo(ctx, info.UserId)
+	tfaInfo, err = service.DB().FetchTfaInfo(ctx, info.UserId)
 	if err != nil || tfaInfo == nil {
-		g.Log().Warning(ctx, "UpMail:", req, err)
+		g.Log().Warning(ctx, "TfaRequest:", req, err)
 		return nil, gerror.NewCode(mpccode.CodeTokenInvalid)
 	}
 	///
-
 	riskSerial, code := service.NrpcClient().RpcRiskTFA(ctx, info.UserId, &model.RiskTfa{
 		UserId: tfaInfo.UserId,
 		Type:   req.CodeType,

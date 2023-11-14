@@ -3,7 +3,9 @@ package db
 import (
 	"context"
 	"errors"
+	"tfaserver/internal/config"
 	"tfaserver/internal/service"
+	"time"
 
 	_ "github.com/gogf/gf/contrib/drivers/pgsql/v2"
 	_ "github.com/gogf/gf/contrib/nosql/redis/v2"
@@ -14,7 +16,8 @@ import (
 
 type sDB struct {
 	// cache *gcache.Cache
-	ctx context.Context
+	ctx        context.Context
+	dbDuration time.Duration
 }
 
 func new() *sDB {
@@ -23,7 +26,8 @@ func new() *sDB {
 	// }
 	// g.Redis().Exists(gctx.GetInitCtx())
 	s := &sDB{
-		ctx: gctx.GetInitCtx(),
+		ctx:        gctx.GetInitCtx(),
+		dbDuration: time.Duration(config.Config.Cache.DBCacheDuration) * time.Second,
 	}
 
 	return s

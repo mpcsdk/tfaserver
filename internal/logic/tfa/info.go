@@ -9,7 +9,7 @@ import (
 	"github.com/mpcsdk/mpcCommon/mpccode"
 )
 
-func (s *sTFA) TFAInfo(ctx context.Context, userId string) (*entity.Tfa, error) {
+func (s *sTFA) TfaInfo(ctx context.Context, userId string) (*entity.Tfa, error) {
 	if userId == "" {
 		return nil, mpccode.ErrArg
 	}
@@ -21,6 +21,10 @@ func (s *sTFA) TFAInfo(ctx context.Context, userId string) (*entity.Tfa, error) 
 		return nil, err
 	}
 	if info == nil {
+		return nil, nil
+	}
+	///
+	if info.Mail == "" && info.Phone == "" {
 		return nil, nil
 	}
 	///

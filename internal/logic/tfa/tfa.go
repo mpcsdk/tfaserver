@@ -112,7 +112,7 @@ func (s *sTFA) TfaRiskTidy(ctx context.Context, tfaInfo *entity.Tfa, riskSerial 
 }
 
 func (s *sTFA) TFATx(ctx context.Context, userId string, riskSerial string) ([]string, error) {
-	info, err := s.TFAInfo(ctx, userId)
+	info, err := s.TfaInfo(ctx, userId)
 	if err != nil {
 		g.Log().Warning(ctx, "TFATx:", "userid:", userId, "riskSerial:", riskSerial)
 		g.Log().Errorf(ctx, "%+v", err)

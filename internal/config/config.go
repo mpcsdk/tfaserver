@@ -12,6 +12,7 @@ type Cache struct {
 	LimitSendInterval        int `json:"limitSendInterval" v:"required|min:1"`
 	VerificationCodeDuration int `json:"VerificationCodeDuration" v:"required|min:1"`
 	SessionDuration          int `json:"sessionDuration" v:"required|min:1"`
+	DBCacheDuration          int `json:"dbCacheDuration" v:"required|min:1"`
 }
 
 type SmsHuawei struct {

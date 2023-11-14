@@ -18,6 +18,7 @@ type (
 		InsertTfaInfo(ctx context.Context, userId string, data *do.Tfa) error
 		// //
 		UpdateTfaInfo(ctx context.Context, userId string, data *do.Tfa) error
+		ExistsTfaInfo(ctx context.Context, userId string) (bool, error)
 		FetchTfaInfo(ctx context.Context, userId string) (*entity.Tfa, error)
 	}
 )

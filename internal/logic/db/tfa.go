@@ -5,7 +5,6 @@ import (
 	"tfaserver/internal/dao"
 	"tfaserver/internal/model/do"
 	"tfaserver/internal/model/entity"
-	"time"
 
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -52,7 +51,7 @@ func (s *sDB) InsertTfaInfo(ctx context.Context, userId string, data *do.Tfa) er
 	}
 
 	_, err = dao.Tfa.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
+		Duration: s.dbDuration,
 		Name:     dao.Tfa.Table() + userId,
 		Force:    false,
 	}).Data(data).
@@ -64,13 +63,30 @@ func (s *sDB) InsertTfaInfo(ctx context.Context, userId string, data *do.Tfa) er
 // //
 func (s *sDB) UpdateTfaInfo(ctx context.Context, userId string, data *do.Tfa) error {
 	_, err := dao.Tfa.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
+		Duration: s.dbDuration,
 		Name:     dao.Tfa.Table() + userId,
 		Force:    false,
 	}).Data(data).Where(do.Tfa{
 		UserId: data.UserId,
 	}).Update()
 	return err
+}
+
+func (s *sDB) ExistsTfaInfo(ctx context.Context, userId string) (bool, error) {
+	if userId == "" {
+		return false, errArg
+	}
+	cnt, err := dao.Tfa.Ctx(ctx).Where(do.Tfa{
+		UserId: userId,
+	}).CountColumn(dao.Tfa.Columns().UserId)
+
+	if err != nil {
+		return false, err
+	}
+	if cnt != 0 {
+		return true, nil
+	}
+	return false, nil
 }
 
 func (s *sDB) FetchTfaInfo(ctx context.Context, userId string) (*entity.Tfa, error) {
@@ -83,7 +99,7 @@ func (s *sDB) FetchTfaInfo(ctx context.Context, userId string) (*entity.Tfa, err
 	}
 	var data *entity.Tfa
 	rst, err := dao.Tfa.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: time.Hour,
+		Duration: s.dbDuration,
 		Name:     dao.Tfa.Table() + userId,
 		Force:    false,
 		// }).Where("user_id", 1).One()
@@ -98,5 +114,9 @@ func (s *sDB) FetchTfaInfo(ctx context.Context, userId string) (*entity.Tfa, err
 		return nil, nil
 	}
 	err = rst.Struct(&data)
+	if err != nil {
+		return nil, err
+	}
+
 	return data, err
 }

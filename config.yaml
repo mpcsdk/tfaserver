@@ -17,6 +17,7 @@ cache:
   sessionDuration: 10000
   verificationCodeDuration : 600
   limitSendInterval: 1
+  dbCacheDuration: 100
 
 redis:
   default:
