@@ -48,14 +48,14 @@ func (c *ControllerV1) TFAInfo(ctx context.Context, req *v1.TFAInfoReq) (res *v1
 			if info.PhoneUpdatedAt == nil {
 				return ""
 			}
-			return info.PhoneUpdatedAt.Local().String()
+			return info.PhoneUpdatedAt.String()
 		}(),
 		Mail: info.Mail,
 		UpMailTime: func() string {
 			if info.MailUpdatedAt == nil {
 				return ""
 			}
-			return info.MailUpdatedAt.Local().String()
+			return info.MailUpdatedAt.String()
 		}(),
 	}
 	return

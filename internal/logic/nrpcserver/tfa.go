@@ -56,7 +56,6 @@ func (*sNrpcServer) RpcTfaInfo(ctx context.Context, req *tfav1.TFAReq) (res *tfa
 	if tfaInfo == nil {
 		return nil, nil
 	}
-	g.Log().Info(ctx, "RpcTfaInfo:", res)
 	res = &tfav1.TFARes{
 		UserId: tfaInfo.UserId,
 		Phone:  tfaInfo.Phone,
@@ -64,16 +63,18 @@ func (*sNrpcServer) RpcTfaInfo(ctx context.Context, req *tfav1.TFAReq) (res *tfa
 			if tfaInfo.PhoneUpdatedAt == nil {
 				return ""
 			}
-			return tfaInfo.PhoneUpdatedAt.Local().String()
+
+			return tfaInfo.PhoneUpdatedAt.String()
 		}(),
 		Mail: tfaInfo.Mail,
 		UpMailTime: func() string {
 			if tfaInfo.MailUpdatedAt == nil {
 				return ""
 			}
-			return tfaInfo.MailUpdatedAt.Local().String()
+			return tfaInfo.MailUpdatedAt.String()
 		}(),
 	}
+	g.Log().Info(ctx, "RpcTfaInfo:", res)
 	return res, nil
 }
 
