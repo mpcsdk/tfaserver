@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 12.3 (Debian 12.3-1.pgdg100+1)
--- Dumped by pg_dump version 12.16
+-- Dumped by pg_dump version 12.16 (Ubuntu 12.16-0ubuntu0.20.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -26,12 +26,12 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.tfa (
     user_id character varying(254) NOT NULL,
-    created_at timestamp(0) with time zone,
-    deleted_at timestamp(0) with time zone,
+    created_at timestamp(0) without time zone,
+    deleted_at timestamp(0) without time zone,
     phone character varying(254),
     mail character varying(254),
-    phone_updated_at timestamp(0) with time zone,
-    mail_updated_at timestamp(0) with time zone,
+    phone_updated_at timestamp(0) without time zone,
+    mail_updated_at timestamp(0) without time zone,
     token_data text
 );
 

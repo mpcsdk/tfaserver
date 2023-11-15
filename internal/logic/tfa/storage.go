@@ -8,24 +8,24 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-func (s *sTFA) createTFA(ctx context.Context, userId string, mail, phone string) error {
+// func (s *sTFA) createTFA(ctx context.Context, userId string, mail, phone string) error {
 
-	e := do.Tfa{
-		UserId:    userId,
-		CreatedAt: gtime.Now(),
-	}
-	// if mail != "" {
-	// 	e.Mail = mail
-	// 	// e.MailUpdatedAt = gtime.Now()
-	// }
-	// if phone != "" {
-	// 	e.Phone = phone
-	// 	// e.PhoneUpdatedAt = gtime.Now()
-	// }
-	err := service.DB().InsertTfaInfo(ctx, userId, &e)
+// 	e := do.Tfa{
+// 		UserId:    userId,
+// 		CreatedAt: gtime.Now(),
+// 	}
+// 	// if mail != "" {
+// 	// 	e.Mail = mail
+// 	// 	// e.MailUpdatedAt = gtime.Now()
+// 	// }
+// 	// if phone != "" {
+// 	// 	e.Phone = phone
+// 	// 	// e.PhoneUpdatedAt = gtime.Now()
+// 	// }
+// 	err := service.DB().InsertTfaInfo(ctx, userId, &e)
 
-	return err
-}
+// 	return err
+// }
 
 func (s *sTFA) recordPhone(ctx context.Context, userId, phone string, phoneExists bool) error {
 	if !phoneExists {
