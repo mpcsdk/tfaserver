@@ -37,6 +37,7 @@ func (*sNrpcServer) RpcTfaInfo(ctx context.Context, req *tfav1.TFAReq) (res *tfa
 	//trace
 	ctx, span := gtrace.NewSpan(ctx, "RpcSendSmsCode")
 	defer span.End()
+	g.Log().Info(ctx, "RpcTfaInfo:", req)
 	// info, err := service.UserInfo().GetUserInfo(ctx, req.Token)
 	// if err != nil {
 	// 	g.Log().Warning(ctx, "TFAInfo no userId:", "req:", req, "userInfo:", info)
@@ -55,7 +56,8 @@ func (*sNrpcServer) RpcTfaInfo(ctx context.Context, req *tfav1.TFAReq) (res *tfa
 	if tfaInfo == nil {
 		return nil, nil
 	}
-	return &tfav1.TFARes{
+	g.Log().Info(ctx, "RpcTfaInfo:", res)
+	res = &tfav1.TFARes{
 		UserId: tfaInfo.UserId,
 		Phone:  tfaInfo.Phone,
 		UpPhoneTime: func() string {
@@ -71,7 +73,8 @@ func (*sNrpcServer) RpcTfaInfo(ctx context.Context, req *tfav1.TFAReq) (res *tfa
 			}
 			return tfaInfo.MailUpdatedAt.Local().String()
 		}(),
-	}, nil
+	}
+	return res, nil
 }
 
 func (*sNrpcServer) RpcSendSmsCode(ctx context.Context, req *tfav1.SmsCodeReq) (res *tfav1.SmsCodeRes, err error) {
