@@ -119,9 +119,9 @@ func (*sNrpcServer) RpcSendVerifyCode(ctx context.Context, req *tfav1.VerifyCode
 	//
 	info, err := service.UserInfo().GetUserInfo(ctx, req.Token)
 	if err != nil {
-		return nil, err
+		g.Log().Warningf(ctx, "%+v", err)
+		return nil, mpccode.CodeTokenInvalid.Error()
 	}
-	// err = service.Risk().VerifyCode(ctx, req.RiskSerial, req.Code)
 	code := &model.VerifyCode{
 		MailCode:  req.MailCode,
 		PhoneCode: req.PhoneCode,
@@ -129,6 +129,13 @@ func (*sNrpcServer) RpcSendVerifyCode(ctx context.Context, req *tfav1.VerifyCode
 	err = service.TFA().VerifyCode(ctx, info.UserId, req.RiskSerial, code)
 	if err != nil {
 		g.Log().Errorf(ctx, "%+v", err)
+		if gerror.HasCode(err, mpccode.CodeRiskVerifyMailInvalid) {
+			err = mpccode.CodeRiskVerifyMailInvalid.Error()
+		} else if gerror.HasCode(err, mpccode.CodeRiskVerifyPhoneInvalid) {
+			err = mpccode.CodeRiskVerifyPhoneInvalid.Error()
+		} else {
+			err = mpccode.CodeRiskVerifyCodeInvalid.Error()
+		}
 	}
 	return nil, err
 }

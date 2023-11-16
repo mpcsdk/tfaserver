@@ -154,7 +154,7 @@ func (s *verifierPhone) Verify(verifierCode *model.VerifyCode) (model.RiskKind, 
 		return "", nil
 	} else {
 		s.verified = false
-		errcode := gerror.WrapCode(mpccode.CodeRiskVerifyPhoneInvalid, mpccode.ErrArg, mpccode.ErrDetails(
+		errcode := gerror.Wrap(gerror.NewCode(mpccode.CodeRiskVerifyPhoneInvalid), mpccode.ErrDetails(
 			mpccode.ErrDetail("codePhone:", s.code),
 			mpccode.ErrDetail("verifierPhoneCode:", verifierCode.PhoneCode),
 		))
