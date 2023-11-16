@@ -129,13 +129,7 @@ func (*sNrpcServer) RpcSendVerifyCode(ctx context.Context, req *tfav1.VerifyCode
 	err = service.TFA().VerifyCode(ctx, info.UserId, req.RiskSerial, code)
 	if err != nil {
 		g.Log().Errorf(ctx, "%+v", err)
-		if gerror.HasCode(err, mpccode.CodeRiskVerifyMailInvalid) {
-			err = mpccode.CodeRiskVerifyMailInvalid.Error()
-		} else if gerror.HasCode(err, mpccode.CodeRiskVerifyPhoneInvalid) {
-			err = mpccode.CodeRiskVerifyPhoneInvalid.Error()
-		} else {
-			err = mpccode.CodeRiskVerifyCodeInvalid.Error()
-		}
+		return nil, err
 	}
 	return nil, err
 }
