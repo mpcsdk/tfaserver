@@ -214,7 +214,7 @@ func (s *verifierMail) Verify(verifierCode *model.VerifyCode) (model.RiskKind, e
 		return "", nil
 	} else {
 		s.verified = false
-		errcode := gerror.WrapCode(mpccode.CodeRiskVerifyMailInvalid, mpccode.ErrArg, mpccode.ErrDetails(
+		errcode := gerror.Wrap(gerror.NewCode(mpccode.CodeRiskVerifyMailInvalid), mpccode.ErrDetails(
 			mpccode.ErrDetail("codeMailCode:", s.code),
 			mpccode.ErrDetail("verifierMailCodeCode:", verifierCode.MailCode),
 		))
