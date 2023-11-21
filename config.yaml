@@ -19,10 +19,10 @@ cache:
   limitSendInterval: 1
   dbCacheDuration: 100
   # limitsendcnt
-  limitSendPhoneCount: 50
-  LimitSendPhoneDuration: 86400
+  limitSendPhoneCount: 10
+  LimitSendPhoneDuration: 600
   LimitSendMailCount: 10
-  LimitSendMailDuration: 86400
+  LimitSendMailDuration: 600
 
 redis:
   default:

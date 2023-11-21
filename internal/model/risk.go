@@ -1,11 +1,5 @@
 package model
 
-import (
-	"context"
-
-	"github.com/gogf/gf/v2/os/gtime"
-)
-
 const (
 	Kind_RiskTx  string = "riskTx"
 	Kind_RiskTfa string = "riskTfa"
@@ -56,22 +50,4 @@ type IVerifier interface {
 	SendCompletion() error
 	//
 	Destination() string
-}
-type RiskVerifyPendding struct {
-	RiskKind RiskKind
-	//风控序号
-	RiskSerial string
-	//用户id
-	UserId string
-	///
-	riskBeforFunc []func(context.Context) error
-	// riskVerify    map[model.RiskKind]*riskVerify
-	verifier map[VerifyKind]IVerifier
-	// sender        map[VerifyKind]sender
-	riskAfterFunc []func(context.Context) error
-	///
-	phoneSender int
-	mailSender  int
-	///
-	dealline *gtime.Time
 }

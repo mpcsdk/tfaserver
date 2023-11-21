@@ -3,6 +3,7 @@ package tfa
 import (
 	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
@@ -36,12 +37,15 @@ func (c *ControllerV1) limitSendVerification(ctx context.Context, tokenId string
 	}
 }
 
-func (c *ControllerV1) delTimeOut(s []*gtime.Time) []*gtime.Time {
+func (c *ControllerV1) delTimeOut(s []*gtime.Time, limitDuration time.Duration) []*gtime.Time {
 	i := 0
-	beforTime := gtime.Now().Add(-limitSendPhoneDuration)
+	n := gtime.Now()
+
+	beforTime := n.Add(-limitDuration)
 	for _, st := range s {
-		if st.Before(beforTime) {
+		if st.After(beforTime) {
 			s[i] = st
+			i++
 		}
 	}
 	return s[:i]
@@ -56,7 +60,7 @@ func (c *ControllerV1) limitSendPhone(ctx context.Context, tokenId string, phone
 		)
 		return err
 	} else if !v.IsEmpty() {
-		err := v.Structs(sendtimes)
+		err := v.Structs(&sendtimes)
 		if err != nil {
 			return gerror.Wrap(err,
 				mpccode.ErrDetails(mpccode.ErrDetail("key", key)),
@@ -64,11 +68,11 @@ func (c *ControllerV1) limitSendPhone(ctx context.Context, tokenId string, phone
 		}
 		////
 		if len(sendtimes) >= limitSendPhoneDurationCnt {
-			sendtimes = c.delTimeOut(sendtimes)
+			sendtimes = c.delTimeOut(sendtimes, limitSendPhoneDuration)
 		}
 
 		if len(sendtimes) >= limitSendPhoneDurationCnt {
-			return err
+			return mpccode.CodeLimitSendPhoneCode.Error()
 		}
 		sendtimes = append(sendtimes, gtime.Now())
 		c.cache.Set(ctx, key, sendtimes, 0)
@@ -88,18 +92,18 @@ func (c *ControllerV1) limitSendMail(ctx context.Context, tokenId string, mail s
 		)
 		return err
 	} else if !v.IsEmpty() {
-		err := v.Structs(sendtimes)
+		err := v.Structs(&sendtimes)
 		if err != nil {
 			return gerror.Wrap(err,
 				mpccode.ErrDetails(mpccode.ErrDetail("key", key)),
 			)
 		}
 		////
-		if len(sendtimes) >= limitSendPhoneDurationCnt {
-			sendtimes = c.delTimeOut(sendtimes)
+		if len(sendtimes) >= limitSendMailDurationCnt {
+			sendtimes = c.delTimeOut(sendtimes, limitSendMailDuration)
 		}
 
-		if len(sendtimes) >= limitSendPhoneDurationCnt {
+		if len(sendtimes) >= limitSendMailDurationCnt {
 			return err
 		}
 		sendtimes = append(sendtimes, gtime.Now())

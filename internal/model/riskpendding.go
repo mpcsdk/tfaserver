@@ -5,8 +5,28 @@ import (
 
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/mpcsdk/mpcCommon/mpccode"
 )
+
+type RiskVerifyPendding struct {
+	RiskKind RiskKind
+	//风控序号
+	RiskSerial string
+	//用户id
+	UserId string
+	///
+	riskBeforFunc []func(context.Context) error
+	// riskVerify    map[model.RiskKind]*riskVerify
+	verifier map[VerifyKind]IVerifier
+	// sender        map[VerifyKind]sender
+	riskAfterFunc []func(context.Context) error
+	///
+	phoneSender int
+	mailSender  int
+	///
+	dealline *gtime.Time
+}
 
 // //
 

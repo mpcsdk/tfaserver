@@ -78,7 +78,7 @@ func (*sNrpcServer) RpcTfaInfo(ctx context.Context, req *tfav1.TFAReq) (res *tfa
 	return res, nil
 }
 
-func (*sNrpcServer) RpcSendSmsCode(ctx context.Context, req *tfav1.SmsCodeReq) (res *tfav1.SmsCodeRes, err error) {
+func (s *sNrpcServer) RpcSendSmsCode(ctx context.Context, req *tfav1.SmsCodeReq) (res *tfav1.SmsCodeRes, err error) {
 	//trace
 	ctx, span := gtrace.NewSpan(ctx, "RpcSendSmsCode")
 	defer span.End()
@@ -87,6 +87,20 @@ func (*sNrpcServer) RpcSendSmsCode(ctx context.Context, req *tfav1.SmsCodeReq) (
 	if err != nil {
 		return nil, err
 	}
+	///
+	risk := service.TFA().GetRiskVerify(ctx, info.UserId, req.RiskSerial)
+	if risk == nil {
+		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
+	}
+	v := risk.Verifier(model.VerifierKind_Phone)
+	if v == nil {
+		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
+	}
+	if err := s.limitSendPhone(ctx, req.Token, v.Destination()); err != nil {
+		g.Log().Errorf(ctx, "%+v", err)
+		return nil, gerror.NewCode(mpccode.CodeLimitSendPhoneCode)
+	}
+	///
 	_, err = service.TFA().SendPhoneCode(ctx, info.UserId, req.RiskSerial)
 	if err != nil {
 		g.Log().Errorf(ctx, "%+v", err)
@@ -94,7 +108,7 @@ func (*sNrpcServer) RpcSendSmsCode(ctx context.Context, req *tfav1.SmsCodeReq) (
 	return nil, err
 }
 
-func (*sNrpcServer) RpcSendMailCode(ctx context.Context, req *tfav1.MailCodekReq) (res *tfav1.MailCodekRes, err error) {
+func (s *sNrpcServer) RpcSendMailCode(ctx context.Context, req *tfav1.MailCodekReq) (res *tfav1.MailCodekRes, err error) {
 	//trace
 	ctx, span := gtrace.NewSpan(ctx, "RpcSendMailCode")
 	defer span.End()
@@ -103,7 +117,20 @@ func (*sNrpcServer) RpcSendMailCode(ctx context.Context, req *tfav1.MailCodekReq
 	if err != nil {
 		return nil, err
 	}
-	// err = service.Risk().RiskMailCode(ctx, req.RiskSerial)
+	/// limit send cnt
+	risk := service.TFA().GetRiskVerify(ctx, info.UserId, req.RiskSerial)
+	if risk == nil {
+		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
+	}
+	v := risk.Verifier(model.VerifierKind_Mail)
+	if v == nil {
+		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
+	}
+	if err := s.limitSendMail(ctx, req.Token, v.Destination()); err != nil {
+		g.Log().Errorf(ctx, "%+v", err)
+		return nil, gerror.NewCode(mpccode.CodeLimitSendMailCode)
+	}
+	///
 	_, err = service.TFA().SendMailCode(ctx, info.UserId, req.RiskSerial)
 	if err != nil {
 		g.Log().Errorf(ctx, "%+v", err)
