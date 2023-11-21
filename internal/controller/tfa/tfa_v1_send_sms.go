@@ -23,6 +23,7 @@ func (c *ControllerV1) SendSmsCode(ctx context.Context, req *v1.SendSmsCodeReq) 
 		g.Log().Errorf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeLimitSendMailCode)
 	}
+
 	//trace
 	ctx, span := gtrace.NewSpan(ctx, "SendSmsCode")
 	defer span.End()
@@ -48,7 +49,6 @@ func (c *ControllerV1) SendSmsCode(ctx context.Context, req *v1.SendSmsCodeReq) 
 	////
 	switch riskKind {
 	case model.RiskKind_BindPhone, model.RiskKind_UpPhone:
-		// case model.Type_TfaBindPhone, model.Type_TfaUpdatePhone:
 		if req.Phone == "" {
 			return nil, gerror.NewCode(mpccode.CodeParamInvalid)
 		}
@@ -61,11 +61,22 @@ func (c *ControllerV1) SendSmsCode(ctx context.Context, req *v1.SendSmsCodeReq) 
 		service.TFA().TfaSetPhone(ctx, tfaInfo, req.Phone, req.RiskSerial, riskKind)
 		///
 	case model.RiskKind_BindMail, model.RiskKind_UpMail:
-	// case model.Type_TfaBindMail, model.Type_TfaUpdateMail:
 	default:
 		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
 	}
-
+	///
+	risk := service.TFA().GetRiskVerify(ctx, info.UserId, req.RiskSerial)
+	if risk == nil {
+		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
+	}
+	v := risk.Verifier(model.VerifierKind_Phone)
+	if v == nil {
+		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
+	}
+	if err := c.limitSendPhone(ctx, req.Token, v.Destination()); err != nil {
+		g.Log().Errorf(ctx, "%+v", err)
+		return nil, gerror.NewCode(mpccode.CodeLimitSendPhoneCode)
+	}
 	///
 	_, err = service.TFA().SendPhoneCode(ctx, info.UserId, req.RiskSerial)
 	if err != nil {

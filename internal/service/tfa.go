@@ -13,6 +13,7 @@ import (
 
 type (
 	ITFA interface {
+		GetRiskVerify(ctx context.Context, userId, riskSerial string) (risk *model.RiskVerifyPendding)
 		// /
 		SendPhoneCode(ctx context.Context, userId string, riskSerial string) (string, error)
 		SendMailCode(ctx context.Context, userId string, riskSerial string) (string, error)

@@ -2,6 +2,7 @@ package tfa
 
 import (
 	"context"
+	"tfaserver/internal/model"
 
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -12,12 +13,12 @@ import (
 func (s *sTFA) SendPhoneCode(ctx context.Context, userId string, riskSerial string) (string, error) {
 	risk := s.riskPenddingContainer.GetRiskVerify(userId, riskSerial)
 	if risk == nil {
-		return "", errRiskNotExist
+		return "", mpccode.CodeRiskSerialNotExist.Error()
 	}
 
-	v := risk.Verifier(VerifierKind_Phone)
+	v := risk.Verifier(model.VerifierKind_Phone)
 	if v == nil {
-		return "", errRiskNotExist
+		return "", mpccode.CodeRiskSerialNotExist.Error()
 	}
 	code, err := v.SendVerificationCode()
 	if err != nil {
@@ -25,7 +26,7 @@ func (s *sTFA) SendPhoneCode(ctx context.Context, userId string, riskSerial stri
 			mpccode.ErrDetail("userId", userId),
 			mpccode.ErrDetail("riskSerial", riskSerial),
 		))
-		return string(VerifierKind_Phone), err
+		return string(model.VerifierKind_Phone), err
 	}
 	////
 
@@ -39,12 +40,12 @@ func (s *sTFA) SendPhoneCode(ctx context.Context, userId string, riskSerial stri
 func (s *sTFA) SendMailCode(ctx context.Context, userId string, riskSerial string) (string, error) {
 	risk := s.riskPenddingContainer.GetRiskVerify(userId, riskSerial)
 	if risk == nil {
-		return "", errRiskNotExist
+		return "", mpccode.CodeRiskSerialNotExist.Error()
 	}
 
-	v := risk.Verifier(VerifierKind_Mail)
+	v := risk.Verifier(model.VerifierKind_Mail)
 	if v == nil {
-		return "", errRiskNotExist
+		return "", mpccode.CodeRiskSerialNotExist.Error()
 	}
 	code, err := v.SendVerificationCode()
 	if err != nil {
@@ -52,7 +53,7 @@ func (s *sTFA) SendMailCode(ctx context.Context, userId string, riskSerial strin
 			mpccode.ErrDetail("userId", userId),
 			mpccode.ErrDetail("riskSerial", riskSerial),
 		))
-		return string(VerifierKind_Mail), err
+		return string(model.VerifierKind_Mail), err
 	}
 	////
 	g.Log().Notice(ctx, "SendMailCode:", "userId:", userId, "riskSerial:", riskSerial, "code:", code)

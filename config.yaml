@@ -18,6 +18,11 @@ cache:
   verificationCodeDuration : 600
   limitSendInterval: 1
   dbCacheDuration: 100
+  # limitsendcnt
+  limitSendPhoneCount: 50
+  LimitSendPhoneDuration: 86400
+  LimitSendMailCount: 10
+  LimitSendMailDuration: 86400
 
 redis:
   default:

@@ -19,6 +19,12 @@ type ControllerV1 struct{
 
 var apiInterval = time.Second * 1
 var limitSendInterval = time.Second * 60
+
+var limitSendPhoneDurationCnt = 50
+var limitSendPhoneDuration  = time.Hour
+var limitSendMailDurationCnt = 10
+var limitSendMailDuration  = time.Hour
+
 func init() {
 	apiInterval = time.Duration(config.Config.Cache.ApiInterval) *time.Second
 	limitSendInterval  = time.Duration(config.Config.Cache.LimitSendInterval) *time.Second	

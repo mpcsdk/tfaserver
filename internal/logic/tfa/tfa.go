@@ -14,8 +14,6 @@ import (
 
 type UserRiskId string
 
-type VerifyKind string
-
 func keyUserRiskId(userId string, riskSerial string) UserRiskId {
 	return UserRiskId(userId + "keyUserRiskId" + riskSerial)
 }
@@ -23,7 +21,7 @@ func keyUserRiskId(userId string, riskSerial string) UserRiskId {
 type sTFA struct {
 	// riskClient riskv1.UserClient
 	ctx                   context.Context
-	riskPenddingContainer *riskPenddingContainer
+	riskPenddingContainer *model.RiskPenddingContainer
 	////
 }
 
@@ -35,7 +33,7 @@ func new() *sTFA {
 	t := config.Config.Cache.VerificationCodeDuration
 	s := &sTFA{
 		//todo:
-		riskPenddingContainer: newRiskPenddingContainer(t),
+		riskPenddingContainer: model.NewRiskPenddingContainer(t),
 		ctx:                   ctx,
 	}
 	///

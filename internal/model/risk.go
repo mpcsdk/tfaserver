@@ -1,5 +1,11 @@
 package model
 
+import (
+	"context"
+
+	"github.com/gogf/gf/v2/os/gtime"
+)
+
 const (
 	Kind_RiskTx  string = "riskTx"
 	Kind_RiskTfa string = "riskTfa"
@@ -12,7 +18,15 @@ const (
 	Type_TfaUpdateMail  string = "updateMail"
 )
 
+type RiskPenndingKey string
+
+func RiskPenddingKey(userId, riskSerial string) RiskPenndingKey {
+
+	return ""
+}
+
 type RiskKind string
+type VerifyKind string
 
 const (
 	RiskKind_Nil       = "RiskKind_Nil"
@@ -23,10 +37,6 @@ const (
 	RiskKind_UpMail    = "RiskKind_UpMail"
 )
 
-type RiskStat struct {
-	Kind string
-	Type string
-}
 type RiskTfa struct {
 	UserId    string `json:"userId"`
 	UserToken string `json:"token"`
@@ -34,4 +44,34 @@ type RiskTfa struct {
 	///
 	Mail  string `json:"mail"`
 	Phone string `json:"phone"`
+}
+type IVerifier interface {
+	Verify(verifierCode *VerifyCode) (RiskKind, error)
+	SetCode(string)
+	RiskKind() RiskKind
+	VerifyKind() VerifyKind
+	IsDone() bool
+	///
+	SendVerificationCode() (string, error)
+	SendCompletion() error
+	//
+	Destination() string
+}
+type RiskVerifyPendding struct {
+	RiskKind RiskKind
+	//风控序号
+	RiskSerial string
+	//用户id
+	UserId string
+	///
+	riskBeforFunc []func(context.Context) error
+	// riskVerify    map[model.RiskKind]*riskVerify
+	verifier map[VerifyKind]IVerifier
+	// sender        map[VerifyKind]sender
+	riskAfterFunc []func(context.Context) error
+	///
+	phoneSender int
+	mailSender  int
+	///
+	dealline *gtime.Time
 }

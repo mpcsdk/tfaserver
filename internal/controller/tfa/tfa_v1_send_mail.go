@@ -61,7 +61,19 @@ func (c *ControllerV1) SendMailCode(ctx context.Context, req *v1.SendMailCodeReq
 	default:
 		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
 	}
-
+	/// limit send cnt
+	risk := service.TFA().GetRiskVerify(ctx, info.UserId, req.RiskSerial)
+	if risk == nil {
+		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
+	}
+	v := risk.Verifier(model.VerifierKind_Mail)
+	if v == nil {
+		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
+	}
+	if err := c.limitSendMail(ctx, req.Token, v.Destination()); err != nil {
+		g.Log().Errorf(ctx, "%+v", err)
+		return nil, gerror.NewCode(mpccode.CodeLimitSendMailCode)
+	}
 	///
 	_, err = service.TFA().SendMailCode(ctx, info.UserId, req.RiskSerial)
 	if err != nil {

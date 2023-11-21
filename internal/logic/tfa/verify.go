@@ -25,7 +25,6 @@ func (s *sTFA) VerifyCode(ctx context.Context, userId string, riskSerial string,
 		return err
 	}
 	k, err = risk.DoFunc(ctx)
-	// err = s.riskPenddingContainer.DoAfter(ctx, userId, riskSerial)
 	if err != nil {
 		err = gerror.Wrap(err, mpccode.ErrDetails(
 			mpccode.ErrDetail("userid", userId),
