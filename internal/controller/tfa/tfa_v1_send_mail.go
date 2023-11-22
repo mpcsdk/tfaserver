@@ -77,11 +77,11 @@ func (c *ControllerV1) SendMailCode(ctx context.Context, req *v1.SendMailCodeReq
 	///
 	_, err = service.TFA().SendMailCode(ctx, info.UserId, req.RiskSerial)
 
-	if gerror.Cause(err).Error() == mpccode.CodeLimitSendMailCode.Error().Error() {
-		g.Log().Warningf(ctx, "%+v", err)
-		return nil, gerror.NewCode(mpccode.CodeLimitSendMailCode)
-	}
 	if err != nil {
+		if gerror.Cause(err).Error() == mpccode.CodeLimitSendMailCode.Error().Error() {
+			g.Log().Warningf(ctx, "%+v", err)
+			return nil, gerror.NewCode(mpccode.CodeLimitSendMailCode)
+		}
 		g.Log().Warningf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeTFASendMailFailed)
 	}

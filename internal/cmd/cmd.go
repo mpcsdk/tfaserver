@@ -46,7 +46,7 @@ func ResponseHandler(r *ghttp.Request) {
 		res  = r.GetHandlerResponse()
 		code = gerror.Code(err)
 	)
-
+	r.SetError(nil)
 	if code == gcode.CodeNil {
 		if err != nil {
 			code = gcode.CodeInternalError
