@@ -16,7 +16,7 @@ type RiskPenndingKey string
 
 func RiskPenddingKey(userId, riskSerial string) RiskPenndingKey {
 
-	return ""
+	return RiskPenndingKey("riskPendding:" + userId + ":" + riskSerial)
 }
 
 type RiskKind string

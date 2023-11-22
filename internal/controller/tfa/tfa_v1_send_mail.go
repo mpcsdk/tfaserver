@@ -15,11 +15,11 @@ import (
 func (c *ControllerV1) SendMailCode(ctx context.Context, req *v1.SendMailCodeReq) (res *v1.SendMailCodeRes, err error) {
 	//limit
 	if err := c.counter(ctx, req.Token, "SendMailCode"); err != nil {
-		g.Log().Errorf(ctx, "%+v", err)
+		g.Log().Warningf(ctx, "%+v", err)
 		return nil, err
 	}
 	if err := c.limitSendVerification(ctx, req.Token, "SendMailCode"); err != nil {
-		g.Log().Errorf(ctx, "%+v", err)
+		g.Log().Warningf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeLimitSendMailCode)
 	}
 	//trace
@@ -29,7 +29,7 @@ func (c *ControllerV1) SendMailCode(ctx context.Context, req *v1.SendMailCodeReq
 	//
 	info, err := service.UserInfo().GetUserInfo(ctx, req.Token)
 	if err != nil || info == nil {
-		g.Log().Errorf(ctx, "%+v", err)
+		g.Log().Warningf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeTokenInvalid)
 	}
 	tfaInfo, err := service.DB().FetchTfaInfo(ctx, info.UserId)
@@ -51,7 +51,7 @@ func (c *ControllerV1) SendMailCode(ctx context.Context, req *v1.SendMailCodeReq
 		}
 		err = service.DB().TfaMailNotExists(ctx, req.Mail)
 		if err != nil {
-			g.Log().Warning(ctx, "%+v", err)
+			g.Log().Warningf(ctx, "%+v", err)
 			return nil, gerror.NewCode(mpccode.CodeTFAMailExists)
 		}
 		////
@@ -71,13 +71,18 @@ func (c *ControllerV1) SendMailCode(ctx context.Context, req *v1.SendMailCodeReq
 		return nil, gerror.NewCode(mpccode.CodeRiskSerialNotExist)
 	}
 	if err := c.limitSendMail(ctx, req.Token, v.Destination()); err != nil {
-		g.Log().Errorf(ctx, "%+v", err)
+		g.Log().Warningf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeLimitSendMailCode)
 	}
 	///
 	_, err = service.TFA().SendMailCode(ctx, info.UserId, req.RiskSerial)
+
+	if gerror.Cause(err).Error() == mpccode.CodeLimitSendMailCode.Error().Error() {
+		g.Log().Warningf(ctx, "%+v", err)
+		return nil, gerror.NewCode(mpccode.CodeLimitSendMailCode)
+	}
 	if err != nil {
-		g.Log().Errorf(ctx, "%+v", err)
+		g.Log().Warningf(ctx, "%+v", err)
 		return nil, gerror.NewCode(mpccode.CodeTFASendMailFailed)
 	}
 	return nil, nil

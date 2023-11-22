@@ -16,10 +16,28 @@ func MiddlewareCORS(r *ghttp.Request) {
 	r.Response.CORSDefault()
 	r.Middleware.Next()
 }
+
+func MiddlewareErrorHandler(r *ghttp.Request) {
+	r.Middleware.Next()
+	if err := r.GetError(); err != nil {
+		g.Log().Error(r.Context(), err)
+		r.Response.ClearBuffer()
+
+		code := gcode.CodeInternalError
+		r.Response.WriteJson(ghttp.DefaultHandlerResponse{
+			Code:    code.Code(),
+			Message: code.Message(),
+			Data:    nil,
+		})
+	}
+}
+
 func ResponseHandler(r *ghttp.Request) {
+	ctx := r.GetCtx()
+
 	r.Middleware.Next()
 	// There's custom buffer content, it then exits current handler.
-	g.Log().Info(context.Background(), r.RequestURI, r.GetBodyString())
+	g.Log().Info(ctx, r.RequestURI, r.GetBodyString())
 	if r.Response.BufferLength() > 0 {
 		return
 	}
@@ -36,7 +54,7 @@ func ResponseHandler(r *ghttp.Request) {
 			code = gcode.CodeOK
 		}
 	}
-	g.Log().Info(context.Background(), r.RequestURI, res)
+	g.Log().Info(ctx, r.RequestURI, res)
 	r.Response.WriteJson(ghttp.DefaultHandlerResponse{
 		Code:    code.Code(),
 		Message: code.Message(),
@@ -52,6 +70,7 @@ var (
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 
 			s := g.Server()
+			s.Use(MiddlewareErrorHandler)
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(ghttp.MiddlewareHandlerResponse)
 				group.Middleware(MiddlewareCORS)
