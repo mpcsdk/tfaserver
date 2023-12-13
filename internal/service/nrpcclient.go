@@ -7,14 +7,16 @@ package service
 
 import (
 	"context"
-	"tfaserver/internal/model"
+	"tfaserver/api/risk/nrpc"
 )
 
 type (
 	INrpcClient interface {
 		Flush()
-		RpcRiskTFA(ctx context.Context, userId string, riskData *model.RiskTfa) (string, int32)
-		RpcAlive(ctx context.Context) error
+		TfaRequest(ctx context.Context, req *nrpc.TfaRequestReq) (*nrpc.TfaRequestRes, error)
+		RpcSendPhoneCode(ctx context.Context, req *nrpc.SendPhoneCodeReq) (*nrpc.SendPhoneCodeRes, error)
+		RpcSendMailCode(ctx context.Context, req *nrpc.SendMailCodeReq) (*nrpc.SendMailCodeRes, error)
+		RpcVerifyCode(ctx context.Context, req *nrpc.VerifyCodeReq) (*nrpc.VerifyCodeRes, error)
 	}
 )
 

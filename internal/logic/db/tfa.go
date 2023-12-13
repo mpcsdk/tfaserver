@@ -39,38 +39,39 @@ func (s *sDB) TfaPhoneNotExists(ctx context.Context, phone string) error {
 	}
 	return nil
 }
-func (s *sDB) InsertTfaInfo(ctx context.Context, userId string, data *do.Tfa) error {
-	cnt, err := dao.Tfa.Ctx(ctx).Where(do.Tfa{
-		UserId: data.UserId,
-	}).CountColumn(dao.Tfa.Columns().UserId)
 
-	if err != nil {
-		return err
-	}
-	if cnt != 0 {
-		return nil
-	}
+// func (s *sDB) InsertTfaInfo(ctx context.Context, userId string, data *do.Tfa) error {
+// 	cnt, err := dao.Tfa.Ctx(ctx).Where(do.Tfa{
+// 		UserId: data.UserId,
+// 	}).CountColumn(dao.Tfa.Columns().UserId)
 
-	_, err = g.Model(dao.Tfa.Table()).Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     dao.Tfa.Table() + userId,
-		Force:    false,
-	}).Data(data).Insert()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	if cnt != 0 {
+// 		return nil
+// 	}
 
-	return err
-}
+// 	_, err = g.Model(dao.Tfa.Table()).Ctx(ctx).Cache(gdb.CacheOption{
+// 		Duration: -1,
+// 		Name:     dao.Tfa.Table() + userId,
+// 		Force:    false,
+// 	}).Data(data).Insert()
+
+// 	return err
+// }
 
 // //
-func (s *sDB) UpdateTfaInfo(ctx context.Context, userId string, data *do.Tfa) error {
-	_, err := g.Model(dao.Tfa.Table()).Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     dao.Tfa.Table() + userId,
-		Force:    false,
-	}).Data(data).Where(do.Tfa{
-		UserId: data.UserId,
-	}).Update()
-	return err
-}
+// func (s *sDB) UpdateTfaInfo(ctx context.Context, userId string, data *do.Tfa) error {
+// 	_, err := g.Model(dao.Tfa.Table()).Ctx(ctx).Cache(gdb.CacheOption{
+// 		Duration: -1,
+// 		Name:     dao.Tfa.Table() + userId,
+// 		Force:    false,
+// 	}).Data(data).Where(do.Tfa{
+// 		UserId: data.UserId,
+// 	}).Update()
+// 	return err
+// }
 
 func (s *sDB) ExistsTfaInfo(ctx context.Context, userId string) (bool, error) {
 	if userId == "" {

@@ -1,9 +1,8 @@
 package nrpcclient
 
 import (
-	riskv1 "tfaserver/api/risk/nrpc/v1"
-	v1 "tfaserver/api/risk/nrpc/v1"
-	// tfav1 "tfaserver/api/tfa/nrpc/v1"
+	"tfaserver/api/risk/nrpc"
+
 	"tfaserver/internal/config"
 	"tfaserver/internal/service"
 	"time"
@@ -13,7 +12,7 @@ import (
 )
 
 type sNrpcClient struct {
-	cli *riskv1.RiskClient
+	cli *nrpc.RiskClient
 	nc  *nats.Conn
 }
 
@@ -27,7 +26,7 @@ func init() {
 	// defer nc.Close()
 
 	// This is our generated client.
-	cli := riskv1.NewRiskClient(nc)
+	cli := nrpc.NewRiskClient(nc)
 
 	// Contact the server and print out its response.
 	_, err = cli.RpcAlive(&empty.Empty{})
@@ -45,5 +44,5 @@ func (s *sNrpcClient) Flush() {
 	if err != nil {
 		panic(err)
 	}
-	s.cli = v1.NewRiskClient(s.nc)
+	s.cli = nrpc.NewRiskClient(s.nc)
 }

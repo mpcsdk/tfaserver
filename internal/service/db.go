@@ -7,7 +7,6 @@ package service
 
 import (
 	"context"
-	"tfaserver/internal/model/do"
 	"tfaserver/internal/model/entity"
 )
 
@@ -15,9 +14,6 @@ type (
 	IDB interface {
 		TfaMailNotExists(ctx context.Context, mail string) error
 		TfaPhoneNotExists(ctx context.Context, phone string) error
-		InsertTfaInfo(ctx context.Context, userId string, data *do.Tfa) error
-		// //
-		UpdateTfaInfo(ctx context.Context, userId string, data *do.Tfa) error
 		ExistsTfaInfo(ctx context.Context, userId string) (bool, error)
 		FetchTfaInfo(ctx context.Context, userId string) (*entity.Tfa, error)
 	}
